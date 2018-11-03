@@ -22,10 +22,10 @@ function debounce(func, delay) {
 }
 
 function search() {
-  fetch(`/search/${radius}/${currLocation}/${budget}`)
-  .then(resp => {
-    results = ['Testing1', 'Testing2', 'Testing3'];
-    let elements = results.map(element => {
+  fetch(`/search/${radius}/${currLocation[0]}/${currLocation[1]}/${budget}`)
+  .then(resp => resp.json())
+  .then(jres => {
+    let elements = jres.map(element => {
       let el = document.createElement('p')
       el.innerHTML = element;
       return el;
@@ -35,7 +35,6 @@ function search() {
         reslist.removeChild(reslist.firstChild);
     }
     elements.forEach(el => reslist.appendChild(el));
-    console.log(resp);
   });
 }
 
