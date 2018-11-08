@@ -1,6 +1,3 @@
-// https://en.wikipedia.org/wiki/Knapsack_problem
-// https://docs.google.com/document/d/e/2PACX-1vQuzq3cnLcsOhIrnAUDBc_WkhvdQEh7rORF2VMos6LAMzPJcdcrBvGZyKnlDzY2Pl7C4P9rRCJab-rT/pub
-
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,101 +15,40 @@ app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 
 
 
-
 function maximizeBudget(results, budget) {
   return new Promise((resolve, reject) => {
-  const ascending = results.sort((a, b) => a.price > b.price);
-  let selections = [];
-  let curr = budget;
-  let i = 0;
-  while(i < ascending.length && curr > 0) {
-    if(ascending[i].price <= curr) {
-      selections.push(ascending[i].name)
+    const maxValuesAtCapacities = [];
+    for(let i = 0; i <= budget; i+=100) {
+      maxValuesAtCapacities.push([0, []])
+    };
+    for (let currentCapacity = 0; currentCapacity <= budget; currentCapacity+=100) {
+      let currentMaxValue = [0,[]];
+      for (let j = 0; j < results.length; j++) {
+        const team = results[j];
+        if (team.price <= currentCapacity) {
+          var maxValueUsingTeam = [0, []];
+          if(maxValuesAtCapacities[(currentCapacity - parseInt(team.price))/100][1] && maxValuesAtCapacities[(currentCapacity - parseInt(team.price))/100][1].indexOf(team.name) === -1 ) {
+            maxValueUsingTeam[0] = parseInt(team.price)
+              + parseInt(maxValuesAtCapacities[(currentCapacity - team.price)/100][0])
+            maxValueUsingTeam[1] = maxValuesAtCapacities[(currentCapacity - parseInt(team.price))/100][1].concat(team.name);
+          } else {
+            maxValueUsingTeam[0] = parseInt(team.price)
+            maxValueUsingTeam[1] = [team.name];
+          }
+          if(currentMaxValue[0] > maxValueUsingTeam[0]) {
+            currentMaxValue = currentMaxValue;
+          } else if(currentMaxValue[0] === maxValueUsingTeam[0]) {
+            currentMaxValue = currentMaxValue[1].length > maxValueUsingTeam[1].length ? currentMaxValue : maxValueUsingTeam;
+          } else {
+            currentMaxValue = maxValueUsingTeam;
+          }
+        }
+      }
+      maxValuesAtCapacities[currentCapacity/100] = currentMaxValue;
     }
-    curr -= ascending[i].price;
-    i++;
-  }
-  resolve(selections);
+    resolve(maxValuesAtCapacities[budget/100][1]);
   })
 }
-
-
-
-
-
-
-//The correct way to do this would be to implement the 0-1 Knapsack problem
-// https://www.geeksforgeeks.org/0-1-knapsack-problem-dp-10/
-
-//   function maximizeBudget(results, budget) {
-//     console.log('maximizeBudget is being called')
-//   const maxValuesAtCapacities = [];
-//   for(let i = 0; i <= budget; i++) {
-//     maxValuesAtCapacities.push([0, []])
-//   };
-
-//   console.log(maxValuesAtCapacities[8500])
-
-//   for (let currentCapacity = 0; currentCapacity <= budget; currentCapacity++) {
-//     let currentMaxValue = [[0,[]]];
-//     for (let j = 0; j < results.length; j++) {
-//       const team = results[j];
-
-//       // console.log(chosen)
-//       if (team.price <= currentCapacity) {
-//         // console.log('team.name: ', team.name)
-
-//         // var chosen = [team.name];
-
-// if(!Array.isArray(maxValuesAtCapacities[currentCapacity - team.price][1])) {
-
-//         var maxValueUsingTeam = [parseInt(team.price)
-//           + parseInt(maxValuesAtCapacities[currentCapacity - team.price][0]),
-//             [team.name]
-//             ];
-
-// }
-
-// else {
-//   // console.log(maxValuesAtCapacities[currentCapacity - team.price][1])
-
-//     maxValueUsingTeam = [parseInt(team.price)
-//       + parseInt(maxValuesAtCapacities[currentCapacity - team.price][0]),
-//         maxValuesAtCapacities[currentCapacity - team.price][1].push(team.name)
-//         ];
-
-// }
-
-//         // maxValueUsingTeam[1] = maxValueUsingTeam[1].concat([team.name]);
-//         currentMaxValue = currentMaxValue[0] > maxValueUsingTeam[0] ? currentMaxValue : maxValueUsingTeam;
-//       }
-//     }
-//     maxValuesAtCapacities[currentCapacity] = currentMaxValue;
-//   }
-//   return maxValuesAtCapacities[budget];
-// }
-
-
-
-// //spend as close to your budget
-// //get the most responses
-
-// //say budget is $8500,
-// //can get three teams:
-// //A) $1,500; $2,500; $3,500 = $7,500
-// //B) $1,500; $2,500; $4,500 = $8,500
-// //But choice B is preferred because closer to budget
-
-
-// let sampleResults = [
-//   { id: 5, name: ' North Horseburg Little League', price: 2500, distance: 0.35105171381722233 },
-//   { id: 1, name: ' Team Zoidberg', price: 4500, distance: 4.214519308968676 },
-//   { id: 3, name: ' The Zoomers', price: 1500, distance: 6.556981803330678 },
-//   { id: 2, name: ' The Wyld Stallions', price: 6000, distance: 16.34835861208388 },
-//   { id: 4, name: ' The Duloc Ogres', price: 3500, distance: 29.822494232806235 }
-// ]
-
-// console.log(maximizeBudget(sampleResults, 8500))
 
 
 
@@ -148,7 +84,6 @@ function findPossibilities(lat, lon, radius, budget, cb) {
     if(error) {
       throw new Error(error);
     } else {
-      console.log('callback')
       cb(results);
     }
   })
