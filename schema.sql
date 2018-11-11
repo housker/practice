@@ -1,5 +1,8 @@
+-- localhost/ AWS RDS
+USE practice
+
 -- jaws
-USE hslvd22czygy6tk7
+-- USE hslvd22czygy6tk7
 
 -- maria
 -- USE oko5qho20klqemu5

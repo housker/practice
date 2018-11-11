@@ -4,7 +4,7 @@
   "description": "League Side technical exercise",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha test.js",
     "start": "node server.js",
     "start-dev": "nodemon server.js"
   },
@@ -14,5 +14,11 @@
   "dependencies": {
     "express": "^4.16.4",
     "mysql": "^2.16.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "faker": "^4.1.0",
+    "mocha": "^5.2.0"
   }
 }
