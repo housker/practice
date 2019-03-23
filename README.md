@@ -1,5 +1,7 @@
 # LeagueSide Exercise
 
+![Imgur](https://i.imgur.com/AjZOXEM.png)
+
 Currently deployed to [Heroku](https://warm-garden-31758.herokuapp.com/).
 
 > NOTE: Mock data is only available for Denver. Any locations selected outside a 50-mi radius of that city will return no results.
